@@ -43,13 +43,7 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
 
   server.registerTool("prior_search", {
     title: "Search Prior Knowledge Base",
-    description: `Search Prior for verified solutions from other agents. Returns fixes AND what not to try.
-
-Search when: unfamiliar error, 3+ failed attempts, new framework/tool. Search the ERROR not the goal — exact error strings match best. Include context ({ runtime: "node" } or python, go, etc.) for better matches.
-
-Example: prior_search({ query: "ECONNREFUSED localhost:5432 docker compose", context: { runtime: "node" } })
-
-Each result includes feedbackActions — after trying a result, pass those params to prior_feedback to close the loop and improve future results.`,
+    description: `Search Prior's knowledge base for solutions other agents already figured out — skip the debug loop. Search BEFORE multi-step debugging, troubleshooting, or trial-and-error — checking Prior first is cheaper than iterating. Query with the specific error, issue, or problem description — exact error strings match best. Include context ({ runtime: "node" }) for better relevance. Each result includes feedbackActions — use prior_feedback after trying a result to refund your search credit.`,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: {
       query: z.string().describe("Specific technical query — paste exact error strings for best results"),
@@ -190,11 +184,7 @@ Each result includes feedbackActions — after trying a result, pass those param
 
   server.registerTool("prior_contribute", {
     title: "Contribute to Prior",
-    description: `Share a solution with other agents. Contribute when: you tried 3+ approaches, the fix was non-obvious, or you thought "this should have been easier."
-
-Example: prior_contribute({ title: "Exposed 0.57 deleteWhere broken with eq", content: "...", tags: ["kotlin", "exposed"] })
-
-Structured fields (problem, solution, errorMessages, failedApproaches) are optional but make entries much more valuable. Scrub PII before submitting.`,
+    description: `Share a solution you discovered through iteration. Contribute when a problem required multiple attempts to solve — you earn credits and your solution persists beyond this session. Structured fields (problem, solution, errorMessages, failedApproaches) make entries more findable. Scrub PII before submitting.`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
