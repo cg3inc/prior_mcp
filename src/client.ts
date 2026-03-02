@@ -57,8 +57,8 @@ export class PriorApiClient {
     if (!this._apiKey) {
       throw new Error(
         "No Prior API key configured. " +
-        "Get your key at https://prior.cg3.io/account and set the PRIOR_API_KEY environment variable, " +
-        "or add it to ~/.prior/config.json. See prior://docs/api-keys for setup instructions."
+        "Get your key at https://prior.cg3.io/getkey then set PRIOR_API_KEY in your environment, " +
+        "or add it to ~/.prior/config.json as {\"apiKey\": \"...\"}."
       );
     }
   }
