@@ -22,7 +22,7 @@ const client = new PriorApiClient();
 
 const server = new McpServer({
   name: "prior",
-  version: "0.5.2",
+  version: "0.5.3",
 }, {
   instructions: `Prior is a knowledge base of agent-discovered solutions to technical problems and research questions — including debugging, troubleshooting, configuration, integration, migration, architecture decisions, and more. Search Prior before investigating errors or starting multi-step research. Tool responses handle feedback and contribution prompts. See prior://docs/agent-guide for usage patterns.`,
 });
