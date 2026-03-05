@@ -12,6 +12,37 @@ import { z } from "zod";
 import { PriorApiClient } from "./client.js";
 import { detectHost, formatResults } from "./utils.js";
 
+/**
+ * Flexible array schema that accepts:
+ * - An actual array: ["a", "b"]
+ * - A JSON string: '["a", "b"]'
+ * - A comma-separated string: "a, b"
+ * Works around MCP clients that serialize arrays as strings.
+ */
+const flexArray = (desc: string) => z.union([
+  z.array(z.string()),
+  z.string().transform((s) => {
+    s = s.trim();
+    if (s.startsWith("[")) {
+      try { const parsed = JSON.parse(s); return Array.isArray(parsed) ? parsed.map(String) : [s]; }
+      catch { /* fall through */ }
+    }
+    return s.split(",").map((t: string) => t.trim()).filter(Boolean);
+  }),
+]).describe(desc);
+
+const flexArrayOptional = (desc: string) => z.union([
+  z.array(z.string()),
+  z.string().transform((s) => {
+    s = s.trim();
+    if (s.startsWith("[")) {
+      try { const parsed = JSON.parse(s); return Array.isArray(parsed) ? parsed.map(String) : [s]; }
+      catch { /* fall through */ }
+    }
+    return s.split(",").map((t: string) => t.trim()).filter(Boolean);
+  }),
+]).optional().describe(desc);
+
 export interface RegisterToolsOptions {
   client: PriorApiClient;
 }
@@ -63,7 +94,7 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
         id: z.string(),
         title: z.string(),
         content: z.string(),
-        tags: z.array(z.string()).nullable().optional(),
+        tags: flexArrayOptional("Filter by tags").nullable(),
         qualityScore: z.number().nullable().optional(),
         relevanceScore: z.number().nullable().optional(),
         errorMessages: z.array(z.string()).nullable().optional(),
@@ -189,12 +220,12 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
       content: z.string().describe("Full description with context and solution (100-10000 chars, markdown)"),
-      tags: z.array(z.string()).describe("1-10 lowercase tags (e.g. ['kotlin', 'exposed', 'workaround'])"),
+      tags: flexArray("1-10 lowercase tags (e.g. ['kotlin', 'exposed', 'workaround'])"),
       model: z.string().optional().describe("AI model that discovered this (e.g. 'claude-sonnet', 'gpt-4o'). Defaults to 'unknown' if omitted."),
       problem: z.string().optional().describe("The symptom or unexpected behavior observed"),
       solution: z.string().optional().describe("What actually fixed it"),
-      errorMessages: z.array(z.string()).optional().describe("Exact error text, or describe the symptom if there was no error message"),
-      failedApproaches: z.array(z.string()).optional().describe("What you tried that didn't work — saves others from dead ends"),
+      errorMessages: flexArrayOptional("Exact error text, or describe the symptom if there was no error message"),
+      failedApproaches: flexArrayOptional("What you tried that didn't work — saves others from dead ends"),
       environment: z.object({
         language: z.string().optional(),
         languageVersion: z.string().optional(),
@@ -203,7 +234,7 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
         runtime: z.string().optional(),
         runtimeVersion: z.string().optional(),
         os: z.string().optional(),
-        tools: z.array(z.string()).optional(),
+        tools: flexArrayOptional("Tools used"),
       }).optional().describe("Version/platform context"),
       effort: z.object({
         tokensUsed: z.number().optional(),
@@ -260,7 +291,7 @@ Use the feedbackActions from your search results — they have pre-built params 
       correction: z.object({
         content: z.string().describe("Corrected content (100-10000 chars)"),
         title: z.string().optional(),
-        tags: z.array(z.string()).optional(),
+        tags: flexArrayOptional("Updated tags for the correction"),
       }).optional().describe("Submit a correction if you found the real fix"),
     },
     outputSchema: {
