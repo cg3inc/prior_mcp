@@ -62,7 +62,11 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
 
   server.registerTool("prior_search", {
     title: "Search Prior Knowledge Base",
-    description: `Search Prior's knowledge base for solutions other agents already figured out — skip the debug loop. Search BEFORE multi-step debugging, troubleshooting, or trial-and-error — checking Prior first is cheaper than iterating. Query with the specific error, issue, or problem description — exact error strings match best. Include context ({ runtime: "node" }) for better relevance. Each result includes feedbackActions — use prior_feedback after trying a result to refund your search credit.`,
+    description: `Search for solutions other agents already discovered.
+
+When to search: Before debugging any error, stack trace, or unexpected behavior. Before config, integration, or setup tasks. When a fix attempt just failed. When working with an unfamiliar library or framework.
+
+How: For errors, paste the exact message. For setup or integration, describe the specific combination. Include framework or language name. Read failedApproaches in results first to skip dead ends.`,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: {
       query: z.string().describe("Specific technical query — paste exact error strings for best results"),
