@@ -15,7 +15,6 @@ import { detectHost, formatResults } from "./utils.js";
 /**
  * Coerce a value that might be a string into an array.
  * MCP clients (e.g. Claude Code) sometimes serialize arrays as strings.
- * Call this in the handler, NOT in the Zod schema (z.union breaks JSON Schema generation).
  */
 function coerceArray(val: unknown): string[] | undefined {
   if (val == null) return undefined;
@@ -30,6 +29,25 @@ function coerceArray(val: unknown): string[] | undefined {
   }
   return undefined;
 }
+
+/**
+ * Zod schema that accepts either a string[] or a JSON-stringified array.
+ * Claude Code sometimes sends arrays as strings — this uses z.preprocess
+ * to coerce before validation, keeping the JSON Schema output as a simple array type.
+ */
+const flexibleStringArray = z.preprocess((val) => {
+  if (val == null) return val;
+  if (Array.isArray(val)) return val.map(String);
+  if (typeof val === "string") {
+    const s = val.trim();
+    if (s.startsWith("[")) {
+      try { const parsed = JSON.parse(s); if (Array.isArray(parsed)) return parsed.map(String); }
+      catch { /* fall through */ }
+    }
+    return s.split(/[, ]+/).map((t: string) => t.trim()).filter(Boolean);
+  }
+  return val;
+}, z.array(z.string()));
 
 export interface RegisterToolsOptions {
   client: PriorApiClient;
@@ -216,12 +234,12 @@ Before submitting, read prior://docs/contributing for field guidance. Scrub file
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
       content: z.string().describe("Full description with context and solution (100-10000 chars, markdown)"),
-      tags: z.array(z.string()).describe("1-10 lowercase tags (e.g. ['kotlin', 'exposed', 'workaround'])"),
+      tags: flexibleStringArray.optional().default([]).describe("1-10 lowercase tags (e.g. ['kotlin', 'exposed', 'workaround'])"),
       model: z.string().optional().describe("AI model that discovered this (e.g. 'claude-sonnet', 'gpt-4o'). Defaults to 'unknown' if omitted."),
       problem: z.string().optional().describe("The symptom or unexpected behavior observed"),
       solution: z.string().optional().describe("What actually fixed it"),
-      errorMessages: z.array(z.string()).optional().describe("Exact error text, or describe the symptom if there was no error message"),
-      failedApproaches: z.array(z.string()).optional().describe("What you tried that didn't work — saves others from dead ends"),
+      errorMessages: flexibleStringArray.optional().describe("Exact error text, or describe the symptom if there was no error message"),
+      failedApproaches: flexibleStringArray.optional().describe("What you tried that didn't work — saves others from dead ends"),
       environment: z.object({
         language: z.string().optional(),
         languageVersion: z.string().optional(),
@@ -245,11 +263,11 @@ Before submitting, read prior://docs/contributing for field guidance. Scrub file
       creditsEarned: z.number().optional(),
     },
   }, async ({ title, content, tags, model, problem, solution, errorMessages, failedApproaches, environment, effort, ttl }) => {
-    const body: Record<string, unknown> = { title, content, tags: coerceArray(tags) || tags, model: model || "unknown" };
+    const body: Record<string, unknown> = { title, content, tags: tags || [], model: model || "unknown" };
     if (problem) body.problem = problem;
     if (solution) body.solution = solution;
-    if (errorMessages) body.errorMessages = coerceArray(errorMessages) || errorMessages;
-    if (failedApproaches) body.failedApproaches = coerceArray(failedApproaches) || failedApproaches;
+    if (errorMessages) body.errorMessages = errorMessages;
+    if (failedApproaches) body.failedApproaches = failedApproaches;
     if (environment) body.environment = environment;
     if (effort) body.effort = effort;
     if (ttl) body.ttl = ttl;
@@ -287,7 +305,7 @@ When: After trying a search result (useful or not_useful), or immediately if a r
       correction: z.object({
         content: z.string().describe("Corrected content (100-10000 chars)"),
         title: z.string().optional(),
-        tags: z.array(z.string()).optional(),
+        tags: flexibleStringArray.optional(),
       }).optional().describe("Submit a correction if you found the real fix"),
     },
     outputSchema: {
