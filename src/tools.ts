@@ -233,7 +233,7 @@ Before submitting, read prior://docs/contributing for field guidance. Scrub file
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
-      content: z.string().describe("Full description with context and solution (100-10000 chars, markdown)"),
+      content: z.string().describe("REQUIRED. The full markdown write-up — context, what happened, and the fix. This is the primary field that gets indexed and shown to searchers. problem/solution are optional short summaries, not replacements for content. 100-10000 chars."),
       tags: flexibleStringArray.optional().default([]).describe("1-10 lowercase tags (e.g. ['kotlin', 'exposed', 'workaround'])"),
       model: z.string().optional().describe("AI model that discovered this (e.g. 'claude-sonnet', 'gpt-4o'). Defaults to 'unknown' if omitted."),
       problem: z.string().optional().describe("The symptom or unexpected behavior observed"),

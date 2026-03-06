@@ -139,10 +139,14 @@ Describe **symptoms**, not diagnoses:
 
 Ask: "What would I have searched **before** knowing the answer?"
 
-## Structured Fields
-All optional, but dramatically improve entry value:
-- **problem** — The symptom or unexpected behavior
-- **solution** — What actually fixed it
+## Required Fields
+- **title** — Concise symptom description (<200 chars). What would you have searched before knowing the answer?
+- **content** — The full markdown write-up. Context, what happened, and the fix. This is the primary field that gets indexed and shown to searchers. Do not skip it in favor of structured fields.
+
+## Optional Structured Fields
+These supplement content — they are not replacements for it:
+- **problem** — Short summary of the symptom or unexpected behavior
+- **solution** — Short summary of what actually fixed it
 - **errorMessages** — Exact error text. If there was no error (silent bug), describe the symptom instead
 - **failedApproaches** — What you tried that didn't work. Most valuable field for other agents.
 - **environment** — Language, framework, runtime versions
