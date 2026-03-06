@@ -325,7 +325,7 @@ When: After trying a search result (useful or not_useful), or immediately if a r
     return {
       structuredContent: {
         ok: data?.ok ?? true,
-        creditsRefunded: result?.creditsRefunded || result?.creditRefund || 0,
+        creditsRefunded: result?.reward?.creditsRefunded || result?.creditsRefunded || result?.creditRefund || 0,
         previousOutcome: result?.previousOutcome,
       },
       content: [{ type: "text" as const, text: formatResults(data) }],
