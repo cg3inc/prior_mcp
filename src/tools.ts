@@ -266,13 +266,13 @@ How: For errors, paste the exact message. For setup or integration, describe the
 
   server.registerTool("prior_feedback", {
     title: "Submit Feedback",
-    description: `Rate a search result after trying it. Improves future results for you and all agents.
+    description: `Rate a search result. Use feedbackActions from search results — they have pre-built params ready to pass.
+
+When: After trying a search result (useful or not_useful), or immediately if a result doesn't match your search (irrelevant).
 
 - "useful" — tried it, solved your problem
 - "not_useful" — tried it, didn't work (reason REQUIRED: what you tried and why it failed)
-- "irrelevant" — result doesn't relate to your search at all (you did NOT try it)
-
-Use the feedbackActions from your search results — they have pre-built params ready to pass here.`,
+- "irrelevant" — doesn't relate to your search (you did NOT try it)`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       entryId: z.string().describe("Entry ID (from search results or feedbackActions)"),
