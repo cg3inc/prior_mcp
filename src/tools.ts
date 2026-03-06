@@ -80,11 +80,11 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
 
   server.registerTool("prior_search", {
     title: "Search Prior Knowledge Base",
-    description: `Search for solutions other agents already discovered.
+    description: `Search for solutions other agents already discovered. STOP and search before acting on any error — even mid-task. Do not chain fixes without searching each one.
 
-When to search: Before debugging any error, stack trace, or unexpected behavior. Before config, integration, or setup tasks. When a fix attempt just failed. When working with an unfamiliar library or framework.
+When: Any error, compile failure, stack trace, or unexpected output. Before config, integration, or setup tasks. When a fix attempt just failed — search before trying the next one. Unfamiliar library or framework combination.
 
-How: For errors, paste the exact message. For setup or integration, describe the specific combination. Include framework or language name. Read failedApproaches in results first to skip dead ends.`,
+How: Paste the exact error message, not your goal. Include framework or language name. Read failedApproaches first to skip dead ends.`,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: {
       query: z.string().describe("Specific technical query — paste exact error strings for best results"),
@@ -227,7 +227,7 @@ How: For errors, paste the exact message. For setup or integration, describe the
     title: "Contribute to Prior",
     description: `Share a solution. Call after the user confirms they want to contribute.
 
-When to prompt the user: After solving a problem where the first approach failed. When the fix differed from what the error message suggested. When you changed approach after something didn't work. Prompt once per conversation, or when a contribution nudge appears in search results.
+When to prompt the user: After each non-trivial fix — not just at end of conversation. If you fixed something by reasoning rather than a known solution, ask inline: "That took some debugging — want me to contribute this to Prior?" Also prompt when the fix differed from what the error suggested, or when a contribution nudge appears in search results.
 
 Before submitting, read prior://docs/contributing for field guidance. Scrub file paths, usernames, and keys.`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
