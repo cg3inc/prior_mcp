@@ -84,7 +84,9 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
 
 When: Any error, compile failure, stack trace, or unexpected output. Before config, integration, or setup tasks. When a fix attempt just failed — search before trying the next one. Unfamiliar library or framework combination.
 
-How: Paste the exact error message, not your goal. Include framework or language name. Read failedApproaches first to skip dead ends.`,
+How: Paste the exact error message, not your goal. Include framework or language name. Read failedApproaches first to skip dead ends.
+
+Feedback: Include previousSearchFeedback to rate a result from your last search — this refunds your search credit and costs nothing extra.`,
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     inputSchema: {
       query: z.string().describe("Specific technical query — paste exact error strings for best results"),
@@ -98,6 +100,11 @@ How: Paste the exact error message, not your goal. Include framework or language
         shell: z.string().optional(),
         taskType: z.string().optional(),
       }).optional().describe("Optional context for better relevance. Include runtime if known."),
+      previousSearchFeedback: z.object({
+        searchId: z.string().optional().describe("searchId from the previous search response"),
+        entryId: z.string().describe("Entry ID from the previous search result"),
+        outcome: z.enum(["useful", "irrelevant", "not_useful"]).describe("useful = it worked, irrelevant = wrong topic, not_useful = tried but failed (will be redirected to prior_feedback for details)"),
+      }).optional().describe("Rate a result from your last search — piggyback feedback costs nothing and refunds your previous search credit"),
     },
     outputSchema: {
       results: z.array(z.object({
@@ -131,7 +138,7 @@ How: Paste the exact error message, not your goal. Include framework or language
       agentHint: z.string().optional().describe("Contextual hint from the server"),
       doNotTry: z.array(z.string()).optional().describe("Aggregated failed approaches from results — things NOT to try"),
     },
-  }, async ({ query, maxResults, maxTokens, minQuality, context }) => {
+  }, async ({ query, maxResults, maxTokens, minQuality, context, previousSearchFeedback }) => {
     const body: Record<string, unknown> = { query };
     // Build context — use provided values, fall back to detected runtime
     const ctx = context || {};
@@ -141,6 +148,7 @@ How: Paste the exact error message, not your goal. Include framework or language
     if (maxResults) body.maxResults = maxResults;
     if (maxTokens) body.maxTokens = maxTokens;
     if (minQuality !== undefined) body.minQuality = minQuality;
+    if (previousSearchFeedback) body.previousSearchFeedback = previousSearchFeedback;
 
     const data = await client.request("POST", "/v1/knowledge/search", body) as any;
     const rawResults = data?.results || data?.data?.results || [];
@@ -164,8 +172,16 @@ How: Paste the exact error message, not your goal. Include framework or language
 
     let text = formatResults(data);
 
-    // Surface backend contribution prompt, enhanced with MCP tool name
+    // Surface piggyback feedback result
     const rawData = data?.data || data;
+    const pbf = rawData?.piggybackFeedback as { applied?: boolean; creditsRefunded?: number; message?: string } | undefined;
+    if (pbf?.message) {
+      const prefix = pbf.applied ? "✅ Feedback applied" : "ℹ️ Feedback";
+      const creditNote = pbf.creditsRefunded ? ` (+${pbf.creditsRefunded} credit refunded)` : "";
+      text = `${prefix}: ${pbf.message}${creditNote}\n\n${text}`;
+    }
+
+    // Surface backend contribution prompt, enhanced with MCP tool name
     let contributionPrompt = rawData?.contributionPrompt as string | undefined;
     if (contributionPrompt) {
       contributionPrompt += " Use `prior_contribute` to save your solution.";
