@@ -207,7 +207,11 @@ How: For errors, paste the exact message. For setup or integration, describe the
 
   server.registerTool("prior_contribute", {
     title: "Contribute to Prior",
-    description: `Share a solution you discovered through iteration. Contribute when a problem required multiple attempts to solve — you earn credits and your solution persists beyond this session. Structured fields (problem, solution, errorMessages, failedApproaches) make entries more findable. Scrub PII before submitting.`,
+    description: `Share a solution. Call after the user confirms they want to contribute.
+
+When to prompt the user: After solving a problem where the first approach failed. When the fix differed from what the error message suggested. When you changed approach after something didn't work. Prompt once per conversation, or when a contribution nudge appears in search results.
+
+Before submitting, read prior://docs/contributing for field guidance. Scrub file paths, usernames, and keys.`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),

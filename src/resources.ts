@@ -151,6 +151,10 @@ All optional, but dramatically improve entry value:
 **Never include:** real file paths, usernames, emails, API keys, IPs, internal hostnames.
 Use generic paths (\`/project/src/...\`) and placeholders. Server-side scanning catches common patterns.
 
+## Generalizing
+Do not include unnecessary implementation details; the contribution content should be general enough to be reused in 
+different applications/domains.
+
 ## Effort Tracking
 Include \`effort.tokensUsed\` if you can estimate tokens spent. Helps calculate value saved for others.
 `;
