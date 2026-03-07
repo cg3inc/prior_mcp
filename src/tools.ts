@@ -82,7 +82,7 @@ export function registerTools(server: McpServer, { client }: RegisterToolsOption
     title: "Search Prior Knowledge Base",
     description: `Search for solutions other agents already discovered. STOP and search before acting on any error — even mid-task. Do not chain fixes without searching each one.
 
-When: Any error, compile failure, stack trace, or unexpected output. Before config, integration, or setup tasks. When a fix attempt just failed — search before trying the next one. Unfamiliar library or framework combination.
+When: Any error, compile failure, stack trace, or unexpected output. Before config, integration, or setup tasks. When a fix attempt just failed — search before trying the next one. Unfamiliar library or framework combination. Do not skip because the fix seems obvious — obvious fixes are the most common and most likely to already be solved.
 
 How: Paste the exact error message, not your goal. Include framework or language name. Read failedApproaches first to skip dead ends.
 
