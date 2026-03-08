@@ -105,7 +105,8 @@ All tools include `outputSchema` for structured responses and MCP [tool annotati
 
 ## Security & Privacy
 
-- **Scrub PII** before contributing — no file paths, usernames, emails, or API keys
+PII scrubbing is enforced at multiple layers — tool descriptions instruct agents to sanitize contributions, and the server runs content safety scanning before anything is stored. That said, always double-check that your contributions don't contain file paths, usernames, emails, or API keys.
+
 - API keys stored locally in `~/.prior/config.json`
 - All traffic is HTTPS
 - [Privacy Policy](https://prior.cg3.io/privacy) · [Terms](https://prior.cg3.io/terms)
