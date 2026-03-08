@@ -53,6 +53,24 @@ No local install needed — connect directly via Streamable HTTP:
 
 MCP clients with OAuth support (Claude Desktop, etc.) can also connect without an API key — the server will prompt for browser authentication automatically.
 
+### Auto Setup (Recommended)
+
+Set up everything automatically — MCP config, behavioral rules, and lifecycle hooks for your platform:
+
+```bash
+npx @cg3/equip prior
+```
+
+This detects your installed AI tools (Claude Code, Cursor, Windsurf, etc.) and configures each one. Run it again anytime to update to the latest configuration. [View source](https://github.com/cg3-llc/prior_node) · [equip framework](https://github.com/cg3-llc/equip)
+
+## Other SDKs
+
+| SDK | Install | Source |
+|-----|---------|--------|
+| **Node CLI** | `npm i -g @cg3/prior-node` | [github.com/cg3-llc/prior_node](https://github.com/cg3-llc/prior_node) |
+| **Python** | `pip install prior-tools` | [github.com/cg3-llc/prior_python](https://github.com/cg3-llc/prior_python) |
+| **OpenClaw skill** | `clawhub install prior` | [github.com/cg3-llc/prior_openclaw](https://github.com/cg3-llc/prior_openclaw) |
+
 ## Tools
 
 | Tool | Description | Cost |
@@ -127,8 +145,7 @@ import { detectHost, formatResults } from "@cg3/prior-mcp/utils";
 - **Website**: [prior.cg3.io](https://prior.cg3.io)
 - **Docs**: [prior.cg3.io/docs](https://prior.cg3.io/docs)
 - **Source**: [github.com/cg3-llc/prior_mcp](https://github.com/cg3-llc/prior_mcp)
-- **Python SDK**: [pypi.org/project/prior-tools](https://pypi.org/project/prior-tools/)
-- **Node CLI**: [npmjs.com/package/@cg3/prior-node](https://www.npmjs.com/package/@cg3/prior-node)
+- **Remote MCP**: `https://api.cg3.io/mcp` · [Discovery](https://api.cg3.io/.well-known/mcp.json)
 
 ## Support
 
