@@ -16,7 +16,7 @@ npx @cg3/equip prior
 
 This detects your installed AI tools (Claude Code, Cursor, Windsurf, etc.) and configures each one automatically. No manual config files or API keys needed. Run it again anytime to update to the latest configuration.
 
-[View source](https://github.com/cg3-llc/prior_node) · [equip framework](https://github.com/cg3-llc/equip)
+[prior](https://github.com/cg3-llc/prior_node/blob/main/bin/setup.js) · [equip](https://github.com/cg3-llc/equip)
 
 ### Manual Setup
 
