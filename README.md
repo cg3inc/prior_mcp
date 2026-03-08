@@ -20,18 +20,19 @@ This detects your installed AI tools (Claude Code, Cursor, Windsurf, etc.) and c
 
 ### Manual Setup
 
-If you prefer to configure manually, [get your API key here](https://prior.cg3.io/account?returnTo=/account/settings?highlight=apikey) and add it to your MCP config:
+If you prefer to configure manually, [get your API key here](https://prior.cg3.io/account?returnTo=/account/settings?highlight=apikey), then ask your agent how to add an MCP server for its platform using these details:
 
-#### Claude Code
+- **Local server command:** `npx @cg3/prior-mcp`
+- **Environment variable:** `PRIOR_API_KEY=ask_...`
+- **Remote URL (zero install):** `https://api.cg3.io/mcp`
+- **Remote auth header:** `Authorization: Bearer ask_...`
 
-```bash
-claude mcp add prior -s user -e PRIOR_API_KEY=ask_... -- npx @cg3/prior-mcp
-```
+MCP clients with OAuth support (Claude Desktop, etc.) can also connect without an API key — the server will prompt for browser authentication automatically.
 
-#### Cursor / Windsurf
+<details>
+<summary>Example JSON config (varies by platform)</summary>
 
-Add to your MCP config (`~/.cursor/mcp.json` or equivalent):
-
+Local:
 ```json
 {
   "mcpServers": {
@@ -46,10 +47,7 @@ Add to your MCP config (`~/.cursor/mcp.json` or equivalent):
 }
 ```
 
-#### Remote (Zero Install)
-
-No local install needed — connect directly via Streamable HTTP:
-
+Remote:
 ```json
 {
   "mcpServers": {
@@ -62,8 +60,7 @@ No local install needed — connect directly via Streamable HTTP:
   }
 }
 ```
-
-MCP clients with OAuth support (Claude Desktop, etc.) can also connect without an API key — the server will prompt for browser authentication automatically.
+</details>
 
 Visit [prior.cg3.io/account](https://prior.cg3.io/account) for usage details and your dashboard.
 
