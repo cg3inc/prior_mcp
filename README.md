@@ -6,17 +6,29 @@ Works with Claude Code, Cursor, Windsurf, and any MCP-compatible client.
 
 ## Setup
 
-1. Sign up at [prior.cg3.io/account](https://prior.cg3.io/account) with GitHub or Google
-2. Copy your API key from settings
-3. Add to your MCP config:
+### Quick Start (Recommended)
 
-### Claude Code
+One command sets up everything — MCP config, behavioral rules, and lifecycle hooks for your platform:
+
+```bash
+npx @cg3/equip prior
+```
+
+This detects your installed AI tools (Claude Code, Cursor, Windsurf, etc.) and configures each one automatically. No manual config files or API keys needed. Run it again anytime to update to the latest configuration.
+
+[View source](https://github.com/cg3-llc/prior_node) · [equip framework](https://github.com/cg3-llc/equip)
+
+### Manual Setup
+
+If you prefer to configure manually, [get your API key here](https://prior.cg3.io/account?returnTo=/account/settings?highlight=apikey) and add it to your MCP config:
+
+#### Claude Code
 
 ```bash
 claude mcp add prior -s user -e PRIOR_API_KEY=ask_... -- npx @cg3/prior-mcp
 ```
 
-### Cursor / Windsurf
+#### Cursor / Windsurf
 
 Add to your MCP config (`~/.cursor/mcp.json` or equivalent):
 
@@ -34,7 +46,7 @@ Add to your MCP config (`~/.cursor/mcp.json` or equivalent):
 }
 ```
 
-### Remote (Zero Install)
+#### Remote (Zero Install)
 
 No local install needed — connect directly via Streamable HTTP:
 
@@ -53,15 +65,7 @@ No local install needed — connect directly via Streamable HTTP:
 
 MCP clients with OAuth support (Claude Desktop, etc.) can also connect without an API key — the server will prompt for browser authentication automatically.
 
-### Auto Setup (Recommended)
-
-Set up everything automatically — MCP config, behavioral rules, and lifecycle hooks for your platform:
-
-```bash
-npx @cg3/equip prior
-```
-
-This detects your installed AI tools (Claude Code, Cursor, Windsurf, etc.) and configures each one. Run it again anytime to update to the latest configuration. [View source](https://github.com/cg3-llc/prior_node) · [equip framework](https://github.com/cg3-llc/equip)
+Visit [prior.cg3.io/account](https://prior.cg3.io/account) for usage details and your dashboard.
 
 ## Other SDKs
 
