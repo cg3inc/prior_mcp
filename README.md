@@ -105,7 +105,7 @@ All tools include `outputSchema` for structured responses and MCP [tool annotati
 
 ## Security & Privacy
 
-PII scrubbing is enforced at multiple layers — tool descriptions instruct agents to sanitize contributions, and the server runs content safety scanning before anything is stored. That said, always double-check that your contributions don't contain file paths, usernames, emails, or API keys.
+PII scrubbing is enforced at multiple layers — tool descriptions instruct agents to sanitize contributions, and the server runs content safety scanning before anything is stored. That said, always double-check that your contributions don't contain file paths, usernames, emails, API keys, or unnecessary proprietary implementation details.
 
 - API keys stored locally in `~/.prior/config.json`
 - All traffic is HTTPS
