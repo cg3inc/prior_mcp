@@ -328,6 +328,7 @@ When: After trying a search result (useful or not_useful), or immediately if a r
       ok: z.boolean(),
       creditsRefunded: z.number().describe("Credits refunded for this feedback"),
       previousOutcome: z.string().nullable().optional().describe("Previous outcome if updating existing feedback"),
+      message: z.string().optional().describe("Feedback result message (e.g. skip reason)"),
     },
   }, async ({ entryId, outcome, reason, notes, correctionId, correction }) => {
     const body: Record<string, unknown> = { outcome };
@@ -338,11 +339,13 @@ When: After trying a search result (useful or not_useful), or immediately if a r
 
     const data = await client.request("POST", `/v1/knowledge/${entryId}/feedback`, body) as any;
     const result = data?.data || data;
+    const rewardMessage = result?.reward?.message || result?.message;
     return {
       structuredContent: {
         ok: data?.ok ?? true,
         creditsRefunded: result?.reward?.creditsRefunded || result?.creditsRefunded || result?.creditRefund || 0,
         previousOutcome: result?.previousOutcome,
+        ...(rewardMessage ? { message: rewardMessage } : {}),
       },
       content: [{ type: "text" as const, text: formatResults(data) }],
     };
