@@ -245,7 +245,7 @@ Feedback: Include previousSearchFeedback to rate a result from your last search 
 
 When to prompt the user: After each non-trivial fix — not just at end of conversation. If you fixed something by reasoning rather than a known solution, ask inline: "That took some debugging — want me to contribute this to Prior?" Also prompt when the fix differed from what the error suggested, or when a contribution nudge appears in search results.
 
-Before submitting, read prior://docs/contributing for field guidance. Scrub file paths, usernames, and keys.`,
+Before submitting, read prior://docs/contributing for field guidance. Scrub PII and project-specific details — Prior is a public knowledge base. Write for developers on unrelated projects, not your team.`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
