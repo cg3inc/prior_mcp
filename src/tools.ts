@@ -100,6 +100,9 @@ Feedback: Include previousSearchFeedback to rate a result from your last search 
         shell: z.string().optional(),
         taskType: z.string().optional(),
       }).optional().describe("Optional context for better relevance. Include runtime if known."),
+      requiredTags: z.array(z.string()).optional().describe("Only return entries that have ALL of these tags"),
+      excludeTags: z.array(z.string()).optional().describe("Exclude entries that have ANY of these tags"),
+      preferredTags: z.array(z.string()).optional().describe("Boost entries with these tags (soft signal, does not exclude non-matches)"),
       previousSearchFeedback: z.object({
         searchId: z.string().optional().describe("searchId from the previous search response"),
         entryId: z.string().describe("Entry ID from the previous search result"),
@@ -138,7 +141,7 @@ Feedback: Include previousSearchFeedback to rate a result from your last search 
       agentHint: z.string().optional().describe("Contextual hint from the server"),
       doNotTry: z.array(z.string()).optional().describe("Aggregated failed approaches from results — things NOT to try"),
     },
-  }, async ({ query, maxResults, maxTokens, minQuality, context, previousSearchFeedback }) => {
+  }, async ({ query, maxResults, maxTokens, minQuality, context, requiredTags, excludeTags, preferredTags, previousSearchFeedback }) => {
     const body: Record<string, unknown> = { query };
     // Build context — use provided values, fall back to detected runtime
     const ctx = context || {};
@@ -148,6 +151,9 @@ Feedback: Include previousSearchFeedback to rate a result from your last search 
     if (maxResults) body.maxResults = maxResults;
     if (maxTokens) body.maxTokens = maxTokens;
     if (minQuality !== undefined) body.minQuality = minQuality;
+    if (requiredTags?.length) body.requiredTags = requiredTags;
+    if (excludeTags?.length) body.excludeTags = excludeTags;
+    if (preferredTags?.length) body.preferredTags = preferredTags;
     if (previousSearchFeedback) body.previousSearchFeedback = previousSearchFeedback;
 
     const data = await client.request("POST", "/v1/knowledge/search", body) as any;
@@ -245,7 +251,9 @@ Feedback: Include previousSearchFeedback to rate a result from your last search 
 
 When to prompt the user: After each non-trivial fix — not just at end of conversation. If you fixed something by reasoning rather than a known solution, ask inline: "That took some debugging — want me to contribute this to Prior?" Also prompt when the fix differed from what the error suggested, or when a contribution nudge appears in search results.
 
-Before submitting, read prior://docs/contributing for field guidance. Scrub PII and project-specific details — Prior is a public knowledge base. Write for developers on unrelated projects, not your team.`,
+Before submitting, read prior://docs/contributing for field guidance. Scrub PII and project-specific details — Prior is a public knowledge base. Write for developers on unrelated projects, not your team.
+
+If the response has requiresConfirmation=true, Prior found similar entries that may already cover this topic. Review them — if they solve the problem, don't re-contribute. If your contribution adds unique value (different environment, additional context, better solution), call prior_contribute again with the same fields plus the confirmToken from the response.`,
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     inputSchema: {
       title: z.string().describe("Concise title (<200 chars) describing the SYMPTOM, not the diagnosis"),
@@ -272,14 +280,18 @@ Before submitting, read prior://docs/contributing for field guidance. Scrub PII 
         toolCalls: z.number().optional(),
       }).optional().describe("Effort spent discovering this solution"),
       ttl: z.string().optional().describe("Time to live: 30d, 60d, 90d (default), 365d, evergreen"),
+      confirmToken: z.string().optional().describe("Token from a previous near-duplicate response. Include this to confirm your contribution adds unique value despite similar entries existing."),
     },
     outputSchema: {
-      id: z.string().describe("Short ID of the new entry"),
-      status: z.string().describe("Entry status (active or pending)"),
+      id: z.string().describe("Short ID of the new entry (empty if requiresConfirmation)"),
+      status: z.string().describe("Entry status: active, pending, or near_duplicate"),
       creditsEarned: z.number().optional(),
+      requiresConfirmation: z.boolean().optional().describe("If true, similar entries exist. Review them and re-submit with confirmToken."),
+      confirmToken: z.string().optional().describe("Token to include in re-submission to confirm contribution"),
     },
-  }, async ({ title, content, tags, model, problem, solution, errorMessages, failedApproaches, environment, effort, ttl }) => {
+  }, async ({ title, content, tags, model, problem, solution, errorMessages, failedApproaches, environment, effort, ttl, confirmToken }) => {
     const body: Record<string, unknown> = { title, content, tags: tags || [], model: model || "unknown" };
+    if (confirmToken) body.confirmToken = confirmToken;
     if (problem) body.problem = problem;
     if (solution) body.solution = solution;
     if (errorMessages) body.errorMessages = errorMessages;
@@ -290,6 +302,22 @@ Before submitting, read prior://docs/contributing for field guidance. Scrub PII 
 
     const data = await client.request("POST", "/v1/knowledge/contribute", body) as any;
     const entry = data?.data || data;
+
+    // Handle near-duplicate soft band response
+    if (entry?.requiresConfirmation || entry?.status === "near_duplicate") {
+      const dupes = entry.nearDuplicates || [];
+      const dupeList = dupes.map((d: any) => `  - ${d.shortId}: "${d.title}" (${Math.round(d.similarity * 100)}% similar)`).join("\n");
+      return {
+        structuredContent: {
+          id: "",
+          status: "near_duplicate",
+          requiresConfirmation: true,
+          confirmToken: entry.confirmToken,
+        },
+        content: [{ type: "text" as const, text: `Similar entries already exist in Prior:\n${dupeList}\n\nReview these entries — if they already solve the problem, no need to contribute. If your contribution adds unique value, call prior_contribute again with the same fields plus confirmToken: "${entry.confirmToken}"` }],
+      };
+    }
+
     return {
       structuredContent: {
         id: entry?.id || entry?.shortId || "",
