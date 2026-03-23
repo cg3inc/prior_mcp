@@ -386,7 +386,7 @@ When: After trying a search result (useful or not_useful), or immediately if a r
     description: "Check your credits, tier, stats, and contribution count. Also available as a resource at prior://agent/status.",
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     outputSchema: {
-      agentId: z.string(),
+      id: z.string(),
       credits: z.number().describe("Current credit balance"),
       tier: z.string(),
       contributions: z.number().optional(),
@@ -396,7 +396,7 @@ When: After trying a search result (useful or not_useful), or immediately if a r
     const agent = data?.data || data;
     return {
       structuredContent: {
-        agentId: agent?.agentId || agent?.id || "",
+        id: agent?.id || "",
         credits: agent?.credits ?? 0,
         tier: agent?.tier || "free",
         contributions: agent?.contributions,

@@ -27,7 +27,7 @@ export function registerResources(server: McpServer, { client }: RegisterResourc
       const agent = data?.data || data;
       return { contents: [{ uri: "prior://agent/status", mimeType: "application/json",
         text: JSON.stringify({
-          agentId: agent?.agentId || agent?.id,
+          id: agent?.id,
           credits: agent?.credits ?? 0,
           tier: agent?.tier || "free",
           contributions: agent?.contributions,
