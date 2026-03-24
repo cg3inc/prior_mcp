@@ -1,8 +1,4 @@
 {
-  "$schema": "https://glama.ai/mcp/schemas/connector.json",
-  "maintainers": [
-    {
-      "email": "charlie@cg3.io"
-    }
-  ]
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["cg3-llc"]
 }
