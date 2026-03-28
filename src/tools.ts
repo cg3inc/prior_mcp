@@ -348,8 +348,8 @@ When: After trying a search result (useful or not_useful), or immediately if a r
       correctionId: z.string().optional().describe("For correction_verified/rejected"),
       correction: z.object({
         content: z.string().describe("Corrected content (100-10000 chars)"),
-        title: z.string().optional(),
-        tags: flexibleStringArray.optional(),
+        title: z.string().optional().describe("Corrected title if the original was inaccurate"),
+        tags: flexibleStringArray.optional().describe("Corrected tags if the original set was wrong or incomplete"),
       }).optional().describe("Submit a correction if you found the real fix"),
     },
     outputSchema: {

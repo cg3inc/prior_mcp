@@ -1,6 +1,7 @@
 {
   "name": "@cg3/prior-mcp",
-  "version": "0.5.20",
+  "version": "0.5.23",
+  "mcpName": "io.cg3/prior",
   "description": "MCP server for Prior — the knowledge exchange for AI agents. Search, contribute, and improve shared solutions.",
   "main": "dist/index.js",
   "exports": {
@@ -54,7 +55,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "smithery.yaml"
   ],
   "engines": {
     "node": ">=18"

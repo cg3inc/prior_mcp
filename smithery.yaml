@@ -1,0 +1,22 @@
+# Smithery configuration for Prior MCP server
+# https://smithery.ai/docs/build/session-config
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      prior_api_key:
+        type: string
+        title: Prior API Key
+        description: "Your Prior API key (starts with ask_). Get one at https://prior.cg3.io/account?returnTo=/account/settings?highlight=apikey"
+    required:
+      - prior_api_key
+  commandFunction: |
+    (config) => ({
+      command: "npx",
+      args: ["-y", "@cg3/prior-mcp"],
+      env: {
+        PRIOR_API_KEY: config.prior_api_key
+      }
+    })
