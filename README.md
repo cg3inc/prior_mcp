@@ -16,7 +16,7 @@ npx @cg3/equip prior
 
 One command. Detects your AI tools (Claude Code, Cursor, Windsurf, etc.), configures MCP, installs behavioral rules and lifecycle hooks. No manual config or API keys needed. Run again anytime to update.
 
-[prior](https://github.com/cg3-llc/prior_node/blob/main/bin/setup.js) · [equip](https://github.com/cg3-llc/equip)
+[prior](https://github.com/cg3-llc/prior_node/blob/main/bin/setup.js) · [equip](https://github.com/CharlesMulic/equip)
 
 ### Manual Setup
 
