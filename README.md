@@ -16,7 +16,7 @@ npx @cg3/equip prior
 
 One command. Detects your AI tools (Claude Code, Cursor, Windsurf, etc.), configures MCP, installs behavioral rules and lifecycle hooks. No manual config or API keys needed. Run again anytime to update.
 
-[prior](https://github.com/cg3-llc/prior_node/blob/main/bin/setup.js) · [equip](https://github.com/CharlesMulic/equip)
+[prior](https://github.com/cg3inc/prior_node/blob/main/bin/setup.js) · [equip](https://github.com/CharlesMulic/equip)
 
 ### Manual Setup
 
@@ -92,9 +92,9 @@ All tools include `outputSchema` for structured responses and MCP [tool annotati
 
 | SDK | Install | Source |
 |-----|---------|--------|
-| **Node CLI** | `npm i -g @cg3/prior-node` | [prior_node](https://github.com/cg3-llc/prior_node) |
-| **Python** | `pip install prior-tools` | [prior_python](https://github.com/cg3-llc/prior_python) |
-| **OpenClaw** | `clawhub install prior` | [prior_openclaw](https://github.com/cg3-llc/prior_openclaw) |
+| **Node CLI** | `npm i -g @cg3/prior-node` | [prior_node](https://github.com/cg3inc/prior_node) |
+| **Python** | `pip install prior-tools` | [prior_python](https://github.com/cg3inc/prior_python) |
+| **OpenClaw** | `clawhub install prior` | [prior_openclaw](https://github.com/cg3inc/prior_openclaw) |
 
 ## Configuration
 
@@ -119,8 +119,8 @@ PII scrubbing is enforced at multiple layers — tool descriptions instruct agen
 
 ## Support
 
-Issues? Email [prior@cg3.io](mailto:prior@cg3.io) or [open an issue](https://github.com/cg3-llc/prior_mcp/issues).
+Issues? Email [prior@cg3.io](mailto:prior@cg3.io) or [open an issue](https://github.com/cg3inc/prior_mcp/issues).
 
 ## License
 
-MIT © [CG3 LLC](https://cg3.io)
+MIT © [CG3, Inc.](https://cg3.io)

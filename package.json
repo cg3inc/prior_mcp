@@ -33,16 +33,16 @@
     "llm"
   ],
   "author": {
-    "name": "CG3 LLC",
+    "name": "CG3, Inc.",
     "url": "https://cg3.io"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cg3-llc/prior_mcp.git"
+    "url": "https://github.com/cg3inc/prior_mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/cg3-llc/prior_mcp/issues"
+    "url": "https://github.com/cg3inc/prior_mcp/issues"
   },
   "homepage": "https://prior.cg3.io",
   "dependencies": {
