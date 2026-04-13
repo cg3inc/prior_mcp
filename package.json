@@ -36,7 +36,7 @@
     "name": "CG3, Inc.",
     "url": "https://cg3.io"
   },
-  "license": "MIT",
+  "license": "FSL-1.1-ALv2",
   "repository": {
     "type": "git",
     "url": "https://github.com/cg3inc/prior_mcp.git"
