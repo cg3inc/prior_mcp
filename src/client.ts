@@ -28,6 +28,8 @@ export interface PriorClientOptions {
   persistConfig?: boolean;
   /** User-Agent string override */
   userAgent?: string;
+  /** Trace ID to forward as X-Request-Id on all outbound API calls */
+  traceId?: string;
 }
 
 export class PriorApiClient {
@@ -36,6 +38,7 @@ export class PriorApiClient {
   private _agentId: string | undefined;
   private persistConfig: boolean;
   private userAgent: string;
+  private traceId: string | undefined;
 
   constructor(options: PriorClientOptions = {}) {
     this.apiUrl = options.apiUrl || process.env.PRIOR_API_URL || "https://api.cg3.io";
@@ -43,6 +46,7 @@ export class PriorApiClient {
     this._agentId = options.agentId;
     this.persistConfig = options.persistConfig ?? true;
     this.userAgent = options.userAgent || `prior-mcp/${VERSION}`;
+    this.traceId = options.traceId;
 
     // Load config on startup if no key provided
     if (!this._apiKey && this.persistConfig) {
@@ -88,6 +92,7 @@ export class PriorApiClient {
         ...(k ? { "Authorization": `Bearer ${k}` } : {}),
         "Content-Type": "application/json",
         "User-Agent": this.userAgent,
+        ...(this.traceId ? { "X-Request-Id": this.traceId } : {}),
       },
       body: body ? JSON.stringify(body) : undefined,
     });
