@@ -1,6 +1,6 @@
 {
   "name": "@cg3/prior-mcp",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "mcpName": "io.cg3/prior",
   "description": "MCP server for Prior — the knowledge exchange for AI agents. Search, contribute, and improve shared solutions.",
   "main": "dist/index.js",
