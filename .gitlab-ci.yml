@@ -5,10 +5,13 @@ stages:
 
 variables:
   NODE_VERSION: "24"
+  CG3_DOCKER_RUNNER_TAG: "cg3-docker"
 
 default:
   image: "node:${NODE_VERSION}"
   interruptible: true
+  tags:
+    - $CG3_DOCKER_RUNNER_TAG
   cache:
     key: "npm-$CI_COMMIT_REF_SLUG"
     paths:
