@@ -173,7 +173,6 @@ Optional token-based overrides for advanced setups:
 \`\`\`bash
 export PRIOR_ACCESS_TOKEN=eyJ...
 export PRIOR_REFRESH_TOKEN=rt_...
-# PRIOR_IDENTITY_TOKEN remains a legacy alias for PRIOR_ACCESS_TOKEN
 \`\`\`
 
 ## Local Browser Login

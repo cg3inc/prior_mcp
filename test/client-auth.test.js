@@ -33,7 +33,6 @@ describe("PriorApiClient auth flows", () => {
     process.env.USERPROFILE = tempHome;
     delete process.env.PRIOR_API_KEY;
     delete process.env.PRIOR_ACCESS_TOKEN;
-    delete process.env.PRIOR_IDENTITY_TOKEN;
     delete process.env.PRIOR_REFRESH_TOKEN;
   });
 

@@ -119,7 +119,6 @@ All tools include `outputSchema` for structured responses and MCP [tool annotati
 |---|---|---|
 | `PRIOR_API_KEY` | API key for durable machine auth | - |
 | `PRIOR_ACCESS_TOKEN` | OIDC access token override for advanced/manual setups | - |
-| `PRIOR_IDENTITY_TOKEN` | Legacy alias for `PRIOR_ACCESS_TOKEN` | - |
 | `PRIOR_REFRESH_TOKEN` | OIDC refresh token override for advanced/manual setups | - |
 | `PRIOR_API_URL` | Server URL | `https://api.cg3.io` |
 
