@@ -136,6 +136,15 @@ function isExpired(expiresAt?: string, accessToken?: string): boolean {
   return false;
 }
 
+function launchDetached(command: string, args: string[]): void {
+  const child = childProcess.spawn(command, args, {
+    detached: true,
+    stdio: "ignore",
+    windowsHide: true,
+  });
+  child.unref();
+}
+
 function generateCodeVerifier(): string {
   return crypto.randomBytes(32).toString("base64url");
 }
@@ -148,11 +157,11 @@ function openBrowser(url: string): void {
   const platform = process.platform;
   try {
     if (platform === "darwin") {
-      childProcess.execSync(`open "${url}"`, { stdio: "ignore" });
+      launchDetached("open", [url]);
     } else if (platform === "win32") {
-      childProcess.execSync(`start "" "${url}"`, { stdio: "ignore" });
+      launchDetached("rundll32.exe", ["url.dll,FileProtocolHandler", url]);
     } else {
-      childProcess.execSync(`xdg-open "${url}"`, { stdio: "ignore" });
+      launchDetached("xdg-open", [url]);
     }
   } catch {
     // Best effort only. We always print the URL for manual fallback.
@@ -294,6 +303,34 @@ export class PriorApiClient {
     this._displayName = undefined;
     this._email = undefined;
     this._authType = this._apiKey ? "api_key" : undefined;
+  }
+
+  async logout(): Promise<{ remoteRevoked: boolean }> {
+    let remoteRevoked = false;
+
+    if (this._refreshToken) {
+      try {
+        const revokeUrl = new URL("/revoke", this.apiUrl).toString();
+        const response = await fetch(revokeUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": this.userAgent,
+          },
+          body: new URLSearchParams({
+            token: this._refreshToken,
+            token_type_hint: "refresh_token",
+          }).toString(),
+          signal: AbortSignal.timeout(5_000),
+        });
+        remoteRevoked = response.ok;
+      } catch {
+        // Best effort only. We always clear local state.
+      }
+    }
+
+    this.clearOidcConfig();
+    return { remoteRevoked };
   }
 
   private applyConfig(config: PriorConfig): void {

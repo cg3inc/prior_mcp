@@ -51,7 +51,7 @@ export async function main() {
 
   if (process.argv.includes("--logout")) {
     const client = new PriorApiClient({ persistConfig: true });
-    client.clearOidcConfig();
+    await client.logout();
     console.error("[prior-mcp] Cleared stored OIDC login. API key config, if any, was preserved.");
     return;
   }

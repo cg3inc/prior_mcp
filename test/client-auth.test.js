@@ -170,7 +170,7 @@ describe("PriorApiClient auth flows", () => {
     }]);
   });
 
-  test("logout clears stored OIDC fields but preserves saved API key config", () => {
+  test("logout revokes the stored refresh token before clearing local OIDC state", async () => {
     const { PriorApiClient, CONFIG_PATH } = loadClientModule();
     fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
     fs.writeFileSync(CONFIG_PATH, JSON.stringify({
@@ -184,13 +184,48 @@ describe("PriorApiClient auth flows", () => {
       email: "human@example.com",
     }, null, 2));
 
+    const calls = [];
+    global.fetch = async (url, options = {}) => {
+      calls.push({ url, method: options.method, body: options.body });
+      return jsonResponse({}, 200);
+    };
+
     const client = new PriorApiClient({ apiUrl: "https://prior.test" });
-    client.clearOidcConfig();
+    const result = await client.logout();
 
     const persisted = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+    assert.strictEqual(result.remoteRevoked, true);
+    assert.deepStrictEqual(calls, [{
+      url: "https://prior.test/revoke",
+      method: "POST",
+      body: "token=oidc_refresh_token&token_type_hint=refresh_token",
+    }]);
     assert.deepStrictEqual(persisted, { apiKey: "prior_machine_key" });
     assert.strictEqual(client.authType, "api_key");
     assert.strictEqual(client.apiKey, "prior_machine_key");
+    assert.strictEqual(client.accessToken, undefined);
+  });
+
+  test("logout still clears local OIDC state when remote revoke fails", async () => {
+    const { PriorApiClient, CONFIG_PATH } = loadClientModule();
+    fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify({
+      authType: "oidc",
+      accessToken: "oidc_access_token",
+      refreshToken: "oidc_refresh_token",
+    }, null, 2));
+
+    global.fetch = async () => {
+      throw new Error("network down");
+    };
+
+    const client = new PriorApiClient({ apiUrl: "https://prior.test" });
+    const result = await client.logout();
+    const persisted = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+
+    assert.strictEqual(result.remoteRevoked, false);
+    assert.deepStrictEqual(persisted, {});
+    assert.strictEqual(client.authType, undefined);
     assert.strictEqual(client.accessToken, undefined);
   });
 });

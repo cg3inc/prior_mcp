@@ -25,17 +25,16 @@ export function registerResources(server: McpServer, { client }: RegisterResourc
         contents: [{
           uri: "prior://agent/status",
           mimeType: "application/json",
-          text: JSON.stringify({
-            id: status.id,
-            authType: status.authType,
-            credits: status.credits,
-            tier: status.tier,
-            contributions: status.contributions,
-            displayName: status.displayName,
-            email: status.email,
-          }, null, 2),
-        }],
-      };
+            text: JSON.stringify({
+              id: status.id,
+              authType: status.authType,
+              credits: status.credits,
+              tier: status.tier,
+              contributions: status.contributions,
+              displayName: status.displayName,
+            }, null, 2),
+          }],
+        };
     } catch (err: any) {
       return {
         contents: [{
