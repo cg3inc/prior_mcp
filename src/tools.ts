@@ -382,26 +382,31 @@ When: After trying a search result (useful or not_useful), or immediately if a r
   // ── prior_status ────────────────────────────────────────────────────
 
   server.registerTool("prior_status", {
-    title: "Check Agent Status",
-    description: "Check your credits, tier, stats, and contribution count. Also available as a resource at prior://agent/status.",
+    title: "Check Prior Status",
+    description: "Check your current Prior auth mode, credits, tier, and contribution count. Also available as a resource at prior://agent/status.",
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     outputSchema: {
       id: z.string(),
+      authType: z.string(),
       credits: z.number().describe("Current credit balance"),
       tier: z.string(),
       contributions: z.number().optional(),
+      displayName: z.string().optional(),
+      email: z.string().optional(),
     },
   }, async () => {
-    const data = await client.request("GET", "/v1/agents/me") as any;
-    const agent = data?.data || data;
+    const status = await client.getStatus();
     return {
       structuredContent: {
-        id: agent?.id || "",
-        credits: agent?.credits ?? 0,
-        tier: agent?.tier || "free",
-        contributions: agent?.contributions,
+        id: status.id,
+        authType: status.authType,
+        credits: status.credits,
+        tier: status.tier,
+        contributions: status.contributions,
+        displayName: status.displayName,
+        email: status.email,
       },
-      content: [{ type: "text" as const, text: formatResults(data) }],
+      content: [{ type: "text" as const, text: formatResults(status) }],
     };
   });
 
