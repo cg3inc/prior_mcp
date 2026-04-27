@@ -16,9 +16,12 @@ import * as path from "node:path";
 export const CONFIG_PATH = path.join(os.homedir(), ".prior", "config.json");
 export const OIDC_CLIENT_ID = "prior-mcp";
 
-const VERSION = "0.6.4";
+const VERSION = "0.7.0";
 const DEFAULT_TIMEOUT_MS = 180_000;
-const DEFAULT_OIDC_SCOPES = "openid profile email prior:read prior:write offline_access";
+// Renamed prior:read/prior:write → account:read/account:write on 2026-04-26 per
+// the oauth-scope-namespace-overhaul initiative (operations/initiatives/...).
+// Breaking change for callers using DEFAULT_OIDC_SCOPES; bump npm minor.
+const DEFAULT_OIDC_SCOPES = "openid profile email account:read account:write offline_access";
 
 export type PriorAuthType = "api_key" | "oidc";
 
