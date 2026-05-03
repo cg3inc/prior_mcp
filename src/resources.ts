@@ -170,9 +170,11 @@ export PRIOR_API_KEY=ask_your_key_here
 Optional token-based overrides for advanced setups:
 
 \`\`\`bash
-export PRIOR_ACCESS_TOKEN=eyJ...
+export PRIOR_IDENTITY_ACCESS_TOKEN=eyJ...
 export PRIOR_REFRESH_TOKEN=rt_...
 \`\`\`
+
+\`PRIOR_IDENTITY_ACCESS_TOKEN\` is a delegated OIDC access token issued by Prior Identity. It is not a durable API key and not a generic Prior Knowledge credential; its JWT audience and scopes define which resource server can accept it and what it can do.
 
 ## Local Browser Login
 \`\`\`bash

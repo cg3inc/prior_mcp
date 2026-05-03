@@ -183,7 +183,7 @@ function buildMissingAuthMessage(): string {
     "No Prior auth configured.",
     "Run `prior-mcp --login` for browser OIDC auth,",
     "configure PRIOR_API_KEY for durable machine auth,",
-    "or use PRIOR_ACCESS_TOKEN only for advanced manual token overrides.",
+    "or use PRIOR_IDENTITY_ACCESS_TOKEN only for advanced manual delegated-token overrides.",
   ].join(" ");
 }
 
@@ -241,7 +241,7 @@ export class PriorApiClient {
     this.apiUrl = options.apiUrl || process.env.PRIOR_API_URL || "https://api.cg3.io";
     this._apiKey = options.apiKey || process.env.PRIOR_API_KEY;
     this._agentId = options.agentId;
-    this._accessToken = options.accessToken || process.env.PRIOR_ACCESS_TOKEN;
+    this._accessToken = options.accessToken || process.env.PRIOR_IDENTITY_ACCESS_TOKEN;
     this._refreshToken = options.refreshToken || process.env.PRIOR_REFRESH_TOKEN;
     this._expiresAt = options.expiresAt;
     this.persistConfig = options.persistConfig ?? true;

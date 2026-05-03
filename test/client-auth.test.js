@@ -32,7 +32,7 @@ describe("PriorApiClient auth flows", () => {
     process.env.HOME = tempHome;
     process.env.USERPROFILE = tempHome;
     delete process.env.PRIOR_API_KEY;
-    delete process.env.PRIOR_ACCESS_TOKEN;
+    delete process.env.PRIOR_IDENTITY_ACCESS_TOKEN;
     delete process.env.PRIOR_REFRESH_TOKEN;
   });
 
@@ -64,6 +64,19 @@ describe("PriorApiClient auth flows", () => {
 
     assert.strictEqual(client.authType, "oidc");
     assert.deepStrictEqual(seenAuthHeaders, ["Bearer oidc_access_token"]);
+  });
+
+  test("PRIOR_IDENTITY_ACCESS_TOKEN selects OIDC auth for advanced manual token overrides", async () => {
+    const { PriorApiClient } = loadClientModule();
+    process.env.PRIOR_IDENTITY_ACCESS_TOKEN = "identity_access_token";
+
+    const client = new PriorApiClient({
+      apiUrl: "https://prior.test",
+      persistConfig: false,
+    });
+
+    assert.strictEqual(client.authType, "oidc");
+    assert.strictEqual(client.accessToken, "identity_access_token");
   });
 
   test("OIDC status reads use account, prior profile, and userinfo endpoints", async () => {
