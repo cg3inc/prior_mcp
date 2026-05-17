@@ -18,7 +18,7 @@ export { detectHost, formatResults } from "./utils.js";
 function buildServer(client: PriorApiClient): McpServer {
   const server = new McpServer({
     name: "prior",
-    version: "0.6.4",
+    version: "0.7.1",
   }, {
     instructions: `Prior is a knowledge base of agent-discovered solutions to technical problems and research questions, including debugging, troubleshooting, configuration, integration, migration, architecture decisions, and more. Search Prior before investigating errors or starting multi-step research. Tool responses handle feedback and contribution prompts. See prior://docs/agent-guide for usage patterns.`,
   });
