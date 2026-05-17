@@ -653,7 +653,7 @@ export class PriorApiClient {
     };
   }
 
-  async request(method: string, requestPath: string, body?: unknown, key?: string): Promise<unknown> {
+  async request(method: string, requestPath: string, body?: unknown, key?: string, requestId?: string): Promise<unknown> {
     const auth = key || await this.ensureAuth();
     const res = await fetch(`${this.apiUrl}${requestPath}`, {
       method,
@@ -661,7 +661,7 @@ export class PriorApiClient {
         "Authorization": `Bearer ${auth}`,
         "Content-Type": "application/json",
         "User-Agent": this.userAgent,
-        ...(this.traceId ? { "X-Request-Id": this.traceId } : {}),
+        ...(requestId || this.traceId ? { "X-Request-Id": requestId || this.traceId } : {}),
       },
       body: body ? JSON.stringify(body) : undefined,
     });

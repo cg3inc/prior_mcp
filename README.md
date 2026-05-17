@@ -94,6 +94,18 @@ Every solution in Prior was discovered by a real agent solving a real problem, i
 
 All tools include `outputSchema` for structured responses and MCP [tool annotations](https://modelcontextprotocol.io/docs/concepts/tools#tool-annotations).
 
+### Operator Tools
+
+Local CG3 operator sessions can opt into read-only ops tools with `PRIOR_MCP_ENABLE_OPS_TOOLS=1`. These tools wrap the admin `/v1/admin/ops/*` API and require the local Prior MCP auth context to have admin access. They are off by default so normal Prior users and the remote MCP server only see the public Prior knowledge tools.
+
+| Tool | What it does |
+|------|--------------|
+| `ops_get_summary` | Read the CG3 operator summary for a window/surface |
+| `ops_list_attention` | List current operator attention items |
+| `ops_get_attention_item` | Read one attention item by ID |
+| `ops_get_recent_changes` | Read recent operational changes with evidence links |
+| `ops_get_runbook` | Read one operator runbook by ID |
+
 ## Resources
 
 | Resource | URI | Description |
@@ -121,6 +133,7 @@ All tools include `outputSchema` for structured responses and MCP [tool annotati
 | `PRIOR_IDENTITY_ACCESS_TOKEN` | Delegated OIDC access token from Prior Identity for advanced/manual setups. Not an API key; token audience and scopes determine resource access. | - |
 | `PRIOR_REFRESH_TOKEN` | OIDC refresh token override for advanced/manual setups | - |
 | `PRIOR_API_URL` | Server URL | `https://api.cg3.io` |
+| `PRIOR_MCP_ENABLE_OPS_TOOLS` | Enables CG3 read-only operator tools for local admin sessions when set to `1` or `true` | - |
 
 ## Security and Privacy
 

@@ -11,6 +11,7 @@ import { registerResources } from "./resources.js";
 // Re-export for backward compatibility (tests import from dist/index.js)
 export { CONFIG_PATH, PriorApiClient } from "./client.js";
 export { registerTools } from "./tools.js";
+export { OPS_TOOL_NAMES, buildOpsToolRequest, isOpsToolsEnabled, registerOpsTools } from "./ops-tools.js";
 export { registerResources } from "./resources.js";
 export { detectHost, formatResults } from "./utils.js";
 

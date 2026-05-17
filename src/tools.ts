@@ -10,6 +10,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { PriorApiClient } from "./client.js";
+import { isOpsToolsEnabled, registerOpsTools } from "./ops-tools.js";
 import { detectHost, formatResults } from "./utils.js";
 
 /**
@@ -51,6 +52,7 @@ const flexibleStringArray = z.preprocess((val) => {
 
 export interface RegisterToolsOptions {
   client: PriorApiClient;
+  enableOpsTools?: boolean;
 }
 
 /**
@@ -74,7 +76,13 @@ export function expandNudgeTokens(message: string): string {
     });
 }
 
-export function registerTools(server: McpServer, { client }: RegisterToolsOptions): void {
+export function registerTools(
+  server: McpServer,
+  { client, enableOpsTools = isOpsToolsEnabled() }: RegisterToolsOptions,
+): void {
+  if (enableOpsTools) {
+    registerOpsTools(server, { client });
+  }
 
   // ── prior_search ────────────────────────────────────────────────────
 
